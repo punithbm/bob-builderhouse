@@ -11,7 +11,7 @@ class ChainService:
         self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         self.contract_address = Web3.to_checksum_address(settings.BLOCKCHAIN_CONTRACT_ADDRESS)
         self.account = Account.from_key(settings.ACCOUNT_PRIVATE_KEY)
-        with open('hello_bitcoin_contract_abi.json', 'r') as abi_definition:
+        with open('btc_bob_market_place_abi.json', 'r') as abi_definition:
             self.contract_abi = json.load(abi_definition)
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.contract_abi)
     def is_connected(self):
@@ -100,3 +100,31 @@ class ChainService:
             except Exception as e:
                 print(e)
         return order_details
+    
+    def approve_token(self, token_address):
+        token_abi = [
+            {
+                "constant": False,
+                "inputs": [
+                    {"name": "_spender", "type": "address"},
+                    {"name": "_value", "type": "uint256"}
+                ],
+                "name": "approve",
+                "outputs": [{"name": "", "type": "bool"}],
+                "type": "function"
+            },
+        ]
+        contract = self.web3.eth.contract(address=token_address, abi=token_abi)
+        max_allowance = 2**256 - 1
+        nonce = self.web3.eth.get_transaction_count(self.account.address)
+        transaction = contract.functions.approve(self.contract_address, max_allowance).build_transaction({
+            'from': self.account.address,
+            'chainId': int(settings.BLOCKCHAIN_ID),
+            'gas': 70000,
+            'gasPrice': self.web3.to_wei('5', 'gwei'),
+            'nonce': nonce,
+        })
+        signed_txn = self.account.sign_transaction(transaction)
+        txn_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        return self.web3.to_hex(txn_hash)
+
