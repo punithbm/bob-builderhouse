@@ -11,30 +11,30 @@ import {BridgeState} from "@bob-collective/bob/bridge/BridgeState.sol";
 
 using SafeERC20 for IERC20;
 
-contract BitcoinUsdt {
+contract BitcoinWbtc {
     using BitcoinTx for BridgeState.Storage;
 
     /**
-     * @dev Mapping to store BTC to USDT (or other ERC20) swap orders based on their unique identifiers.
+     * @dev Mapping to store BTC to WBTC (or other ERC20) swap orders based on their unique identifiers.
      * Each order is associated with a unique ID, and the order details are stored in the BtcSellOrder struct.
      */
     mapping(uint256 => BtcSellOrder) public btcSellOrders;
 
     /**
-     * @dev Mapping to store ordinal sell orders for swapping BTC to USDT (or other ERC20) based on their unique identifiers.
+     * @dev Mapping to store ordinal sell orders for swapping BTC to WBTC (or other ERC20) based on their unique identifiers.
      * Each ordinal sell order is associated with a unique ID, and the order details are stored in the OrdinalSellOrder struct.
      */
     mapping(uint256 => OrdinalSellOrder) public ordinalSellOrders;
 
     /**
      * @dev The address of the ERC-20 contract. You can use this variable for any ERC-20 token,
-     * not just USDT (Tether). Make sure to set this to the appropriate ERC-20 contract address.
+     * not just WBTC (Tether). Make sure to set this to the appropriate ERC-20 contract address.
      */
-    IERC20 public usdtContractAddress;
+    IERC20 public wbtcContractAddress;
 
     /**
-     * @dev Counter for generating unique identifiers for BTC to USDT swap orders.
-     * The `nextBtcOrderId` is incremented each time a new BTC to USDT swap order is created,
+     * @dev Counter for generating unique identifiers for BTC to WBTC swap orders.
+     * The `nextBtcOrderId` is incremented each time a new BTC to WBTC swap order is created,
      * ensuring that each order has a unique identifier.
      */
     uint256 nextBtcOrderId;
@@ -47,23 +47,23 @@ contract BitcoinUsdt {
     uint256 nextOrdinalOrderId;
 
     /**
-     * @dev Struct representing a BTC to USDT swap order.
+     * @dev Struct representing a BTC to WBTC swap order.
      */
     struct BtcSellOrder {
         uint256 sellAmountBtc; // Amount of BTC to be sold in the order.
-        uint256 buyAmount; // Amount of USDT (or other ERC20) to be bought in the order.
+        uint256 buyAmount; // Amount of WBTC (or other ERC20) to be bought in the order.
         address btcSeller; // Address of the seller initiating the order.
         BitcoinAddress btcBuyer; // Bitcoin address of the buyer (initialized with an empty scriptPubKey).
         bool isOrderAccepted; // Flag indicating whether the order has been accepted.
     }
 
     /**
-     * @dev Struct representing an ordinal sell order for swapping Ordinal to USDT.
+     * @dev Struct representing an ordinal sell order for swapping Ordinal to WBTC.
      */
     struct OrdinalSellOrder {
         OrdinalId ordinalID; // Unique identifier for the ordinal sell order.
-        uint256 buyAmount; // Amount of USDT (or other ERC20) to be bought in the order.
-        BitcoinTx.UTXO utxo; // UTXO associated with the BTC to USDT swap order.
+        uint256 buyAmount; // Amount of WBTC (or other ERC20) to be bought in the order.
+        BitcoinTx.UTXO utxo; // UTXO associated with the BTC to WBTC swap order.
         address ordinalSeller; // Address of the seller initiating the ordinal order.
         BitcoinAddress ordinalBuyer; // Bitcoin address of the buyer (initialized with an empty scriptPubKey).
         bool isOrderAccepted; // Flag indicating whether the ordinal order has been accepted.
@@ -98,16 +98,16 @@ contract BitcoinUsdt {
     /**
      * @dev Constructor to initialize the contract with the relay and ERC20 token address.
      * @param _relay The relay contract implementing the IRelay interface.
-     * @param _usdtContractAddress The address of the USDT contract.
+     * @param _wbtcContractAddress The address of the WBTC contract.
      *
      * Additional functionalities of the relay can be found in the documentation available at:
      * https://docs.gobob.xyz/docs/contracts/src/src/relay/LightRelay.sol/contract.LightRelay
      */
-    constructor(IRelay _relay, address _usdtContractAddress) {
+    constructor(IRelay _relay, address _wbtcContractAddress) {
         relay.relay = _relay;
         relay.txProofDifficultyFactor = 1;
         testLightRelay = TestLightRelay(address(relay.relay));
-        usdtContractAddress = IERC20(_usdtContractAddress);
+        wbtcContractAddress = IERC20(_wbtcContractAddress);
     }
 
     /**
@@ -159,7 +159,7 @@ contract BitcoinUsdt {
         require(placedOrder.isOrderAccepted == false, "Order has already been accepted");
 
         // "lock" selling token by transferring to contract
-        IERC20(usdtContractAddress).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
+        IERC20(wbtcContractAddress).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
 
         placedOrder.btcBuyer = bitcoinAddress;
         placedOrder.isOrderAccepted = true;
@@ -180,7 +180,7 @@ contract BitcoinUsdt {
      *   - The BTC transaction output must match the expected amount and recipient.
      * @dev Effects:
      *   - Sets the relay difficulty based on the Bitcoin headers in the proof.
-     *   - Transfers the locked USDT amount to the original seller.
+     *   - Transfers the locked WBTC amount to the original seller.
      *   - Removes the order from the mapping after successful processing.
      * @dev Emits a `btcSuccessfullySendtoDestination` event upon successful completion.
      */
@@ -203,13 +203,13 @@ contract BitcoinUsdt {
         // Check if the BTC transaction output matches the expected amount and recipient
         _checkBitcoinTxOutput(acceptedOrder.sellAmountBtc, acceptedOrder.btcBuyer, transaction);
 
-        // Transfer the locked USDT to the original seller
-        IERC20(usdtContractAddress).safeTransfer(acceptedOrder.btcSeller, acceptedOrder.buyAmount);
+        // Transfer the locked WBTC to the original seller
+        IERC20(wbtcContractAddress).safeTransfer(acceptedOrder.btcSeller, acceptedOrder.buyAmount);
 
         // Remove the order from the mapping since it has been successfully processed
         delete btcSellOrders[id];
 
-        // Emit an event indicating the successful completion of the BTC to USDT swap
+        // Emit an event indicating the successful completion of the BTC to WBTC swap
         emit btcSuccessfullySendtoDestination(id);
     }
 
@@ -261,7 +261,7 @@ contract BitcoinUsdt {
         require(placedOrder.isOrderAccepted == false, "Order already accepted");
 
         // "lock" sell token by transferring to contract
-        IERC20(usdtContractAddress).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
+        IERC20(wbtcContractAddress).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
 
         placedOrder.ordinalBuyer = bitcoinAddress;
         placedOrder.isOrderAccepted = true;
@@ -286,7 +286,7 @@ contract BitcoinUsdt {
      *   - Validates the BTC transaction proof using the relay.
      *   - Ensures that the BTC transaction input spends the specified UTXO.
      *   - Checks the BTC transaction output to the buyer's address.
-     *   - Transfers the locked USDT amount to the original seller.
+     *   - Transfers the locked WBTC amount to the original seller.
      *   - Removes the ordinal sell order from storage after successful processing.
      * @dev Emits an `ordinalSuccessfullySendtoDestination` event upon successful completion.
      */
@@ -313,8 +313,8 @@ contract BitcoinUsdt {
 
         // ToDo: Check that the correct satoshis are being spent to the buyer's address if needed
 
-        // Transfer the locked USDT to the original seller
-        IERC20(usdtContractAddress).safeTransfer(acceptedOrder.ordinalSeller, acceptedOrder.buyAmount);
+        // Transfer the locked WBTC to the original seller
+        IERC20(wbtcContractAddress).safeTransfer(acceptedOrder.ordinalSeller, acceptedOrder.buyAmount);
 
         // Remove the ordinal sell order from storage as it has been successfully processed
         delete ordinalSellOrders[id];

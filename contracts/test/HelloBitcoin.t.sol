@@ -11,7 +11,7 @@ import {stdStorage, StdStorage, Test, console} from "forge-std/Test.sol";
 import {Utilities} from "./Utilities.sol";
 import {BitcoinTx} from "@bob-collective/bob/bridge/BitcoinTx.sol";
 import {TestLightRelay} from "@bob-collective/bob/relay/TestLightRelay.sol";
-import {BitcoinUsdt} from "../src/BitcoinUsdt.sol";
+import {BitcoinUsdc} from "../src/BitcoinUsdc.sol";
 
 // Arbitary ERC20 token for testing purposes
 contract ArbitaryUsdtToken is ERC20, Ownable {
@@ -26,16 +26,16 @@ contract ArbitaryUsdtToken is ERC20, Ownable {
 // Using SafeERC20 for IERC20 interface
 using SafeERC20 for IERC20;
 
-// Test contract for BitcoinUsdt functionality
-contract BitcoinUsdtTest is BitcoinUsdt, Test {
+// Test contract for BitcoinUsdc functionality
+contract BitcoinUsdcTest is BitcoinUsdc, Test {
     Utilities internal utils;
     address payable[] internal users;
     address internal alice;
     address internal bob;
     ArbitaryUsdtToken usdtToken = new ArbitaryUsdtToken("0xF58de5056b7057D74f957e75bFfe865F571c3fB6", "USDT");
 
-    // Constructor initializes BitcoinUsdtTest with a TestLightRelay and ArbitaryUsdtToken
-    constructor() BitcoinUsdt(testLightRelay, address(usdtToken)) {}
+    // Constructor initializes BitcoinUsdcTest with a TestLightRelay and ArbitaryUsdtToken
+    constructor() BitcoinUsdc(testLightRelay, address(usdtToken)) {}
 
     // Function to set up test environment
     function setUp() public {
