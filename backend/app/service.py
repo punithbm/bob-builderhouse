@@ -11,7 +11,7 @@ class ChainService:
         self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         self.contract_address = Web3.to_checksum_address(settings.BLOCKCHAIN_CONTRACT_ADDRESS)
         self.account = Account.from_key(settings.ACCOUNT_PRIVATE_KEY)
-        with open('../contracts/hello_bitcoin_contract_abi.json', 'r') as abi_definition:
+        with open('hello_bitcoin_contract_abi.json', 'r') as abi_definition:
             self.contract_abi = json.load(abi_definition)
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.contract_abi)
     def is_connected(self):
