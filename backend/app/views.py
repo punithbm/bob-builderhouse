@@ -79,3 +79,9 @@ def ClaimToken(request):
     tx_hash = service.claim_token(data.get('address'))
     response = {"tx_hash": tx_hash}
     return JsonResponse(response)
+
+@api_view(['GET'])
+def GetOrderId(request, tx_hash):
+    service = ChainService()
+    response = service.get_order_id(tx_hash)
+    return JsonResponse(response)

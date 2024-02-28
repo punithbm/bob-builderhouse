@@ -53,6 +53,7 @@ class ChainService:
             # print(self.web3.eth)
             # Fetch the transaction receipt using its hash
             tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
+            # print("logs", tx_receipt.logs)
             return tx_receipt, None
         except Exception as e:
             print(f"Error fetching transaction receipt: {e}")
@@ -81,3 +82,21 @@ class ChainService:
         # Call the balanceOf function
         balance = token_contract.functions.balanceOf(address).call()
         return balance
+    
+    def get_order_id(self, tx_hash):
+        order_details = {}
+        tx = self.web3.eth.get_transaction_receipt(tx_hash)
+        # for event_name in self.contract.events:
+        # event_abi = [event for event in self.contract_abi if event['type'] == 'event' and event['name'] == 'btcSellOrderSuccessfullyPlaced'][0]
+        # event_signature_hash = self.web3.keccak(text="btcSellOrderSuccessfullyPlaced(uint256,uint256,uint256)").hex()
+        event = self.contract.events.btcSellOrderSuccessfullyPlaced
+        for log in tx.logs:
+            try:
+                decoded_log = event().process_log(log)
+                if decoded_log and decoded_log.args:
+                    order_details['order_id'] = decoded_log.args.orderId
+                    order_details['sell_amount_btc'] = decoded_log.args.sellAmountBtc
+                    order_details['buy_amount'] = decoded_log.args.buyAmount
+            except Exception as e:
+                print(e)
+        return order_details
