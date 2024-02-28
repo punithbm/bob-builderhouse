@@ -1,0 +1,83 @@
+.heading1_bold {
+    @apply font-bold lg:text-5xl lg:leading-[58px];
+}
+
+.heading1_medium {
+    @apply font-medium lg:text-5xl leading-[58px];
+}
+
+.heading2_bold {
+    @apply font-bold lg:text-3xl leading-[38px];
+}
+
+.heading2_medium {
+    @apply font-[600] lg:text-3xl leading-[38px];
+}
+
+.heading2_regular {
+    @apply font-normal lg:text-3xl;
+}
+
+.heading3_bold {
+    @apply font-bold lg:text-2xl leading-[29px];
+}
+
+.heading3_medium {
+    @apply font-[600] lg:text-2xl leading-[29px];
+}
+
+.heading3_regular {
+    @apply font-normal lg:text-2xl leading-[29px];
+}
+
+.paragraph1_bold {
+    @apply font-bold lg:text-base lg:leading-[19px];
+}
+
+.paragraph1_regular {
+    @apply font-normal lg:text-base lg:leading-[19px];
+}
+
+.paragraph1_medium {
+    @apply font-medium lg:text-base lg:leading-[19px];
+}
+
+.paragraph2_bold {
+    @apply font-bold lg:text-sm lg:leading-[17px];
+}
+
+.paragraph2_regular {
+    @apply font-normal lg:text-sm lg:leading-[17px];
+}
+
+.meta_bold {
+    @apply font-bold lg:text-xs leading-4;
+}
+
+.meta_regular {
+    @apply font-normal lg:text-xs;
+}
+
+.link1_bold {
+    @apply font-bold lg:text-base lg:leading-[26px] underline text-link-500;
+}
+
+.link1_regular {
+    @apply font-normal lg:text-base lg:leading-[26px] underline text-link-500;
+}
+
+.link2_bold {
+    @apply font-bold lg:text-sm lg:leading-[22px] underline text-link-500;
+}
+
+.link2_regular {
+    @apply font-normal lg:text-sm lg:leading-[22px] underline text-link-500;
+}
+
+.link_meta_bold {
+    @apply font-bold lg:text-xs underline text-link-500;
+}
+
+.link2_meta_regular {
+    @apply font-normal lg:text-xs underline text-link-500;
+}
