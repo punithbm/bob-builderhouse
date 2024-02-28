@@ -1,415 +1,568 @@
 export const BtcMarketplaceAbi = [
   {
-    type: 'constructor',
-    stateMutability: 'nonpayable',
-    inputs: [{ type: 'address', name: '_relay', internalType: 'contract IRelay' }]
-  },
-  {
-    type: 'event',
-    name: 'acceptBtcBuyOrderEvent',
     inputs: [
-      { type: 'uint256', name: 'orderId', internalType: 'uint256', indexed: true },
-      { type: 'uint256', name: 'acceptId', internalType: 'uint256', indexed: true },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256', indexed: false },
-      { type: 'uint256', name: 'ercAmount', internalType: 'uint256', indexed: false },
-      { type: 'address', name: 'ercToken', internalType: 'address', indexed: false }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'acceptBtcSellOrderEvent',
-    inputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256', indexed: true },
-      { type: 'uint256', name: 'acceptId', internalType: 'uint256', indexed: true },
       {
-        type: 'tuple',
-        name: 'bitcoinAddress',
-        internalType: 'struct BtcMarketPlace.BitcoinAddress',
-        indexed: false,
-        components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
+        internalType: "contract IRelay",
+        name: "_relay",
+        type: "address",
       },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256', indexed: false },
-      { type: 'uint256', name: 'ercAmount', internalType: 'uint256', indexed: false },
-      { type: 'address', name: 'ercToken', internalType: 'address', indexed: false }
     ],
-    anonymous: false
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
-    type: 'event',
-    name: 'cancelAcceptedBtcBuyOrderEvent',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256', indexed: false }],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'cancelAcceptedBtcSellOrderEvent',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256', indexed: false }],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'placeBtcBuyOrderEvent',
+    anonymous: false,
     inputs: [
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256', indexed: false },
       {
-        type: 'tuple',
-        name: 'bitcoinAddress',
-        internalType: 'struct BtcMarketPlace.BitcoinAddress',
-        indexed: false,
-        components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
       },
-      { type: 'address', name: 'sellingToken', internalType: 'address', indexed: false },
-      { type: 'uint256', name: 'saleAmount', internalType: 'uint256', indexed: false }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'placeBtcSellOrderEvent',
-    inputs: [
-      { type: 'uint256', name: 'orderId', internalType: 'uint256', indexed: true },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256', indexed: false },
-      { type: 'address', name: 'buyingToken', internalType: 'address', indexed: false },
-      { type: 'uint256', name: 'buyAmount', internalType: 'uint256', indexed: false }
-    ],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'proofBtcBuyOrderEvent',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256', indexed: false }],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'proofBtcSellOrderEvent',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256', indexed: false }],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'withdrawBtcBuyOrderEvent',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256', indexed: false }],
-    anonymous: false
-  },
-  {
-    type: 'event',
-    name: 'withdrawBtcSellOrderEvent',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256', indexed: false }],
-    anonymous: false
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
-    name: 'REQUEST_EXPIRATION_SECONDS',
-    inputs: []
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
-    name: 'acceptBtcBuyOrder',
-    inputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' }
-    ]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
-    name: 'acceptBtcSellOrder',
-    inputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
       {
-        type: 'tuple',
-        name: 'bitcoinAddress',
-        internalType: 'struct BtcMarketPlace.BitcoinAddress',
-        components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
-      },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' }
-    ]
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'orderId', internalType: 'uint256' },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-      { type: 'address', name: 'ercToken', internalType: 'address' },
-      { type: 'uint256', name: 'ercAmount', internalType: 'uint256' },
-      { type: 'address', name: 'requester', internalType: 'address' },
-      { type: 'address', name: 'accepter', internalType: 'address' },
-      { type: 'uint256', name: 'acceptTime', internalType: 'uint256' }
-    ],
-    name: 'acceptedBtcBuyOrders',
-    inputs: [{ type: 'uint256', name: '', internalType: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'orderId', internalType: 'uint256' },
-      {
-        type: 'tuple',
-        name: 'bitcoinAddress',
-        internalType: 'struct BtcMarketPlace.BitcoinAddress',
-        components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
-      },
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-      { type: 'address', name: 'ercToken', internalType: 'address' },
-      { type: 'uint256', name: 'ercAmount', internalType: 'uint256' },
-      { type: 'address', name: 'requester', internalType: 'address' },
-      { type: 'address', name: 'accepter', internalType: 'address' },
-      { type: 'uint256', name: 'acceptTime', internalType: 'uint256' }
-    ],
-    name: 'acceptedBtcSellOrders',
-    inputs: [{ type: 'uint256', name: '', internalType: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-      {
-        type: 'tuple',
-        name: 'bitcoinAddress',
-        internalType: 'struct BtcMarketPlace.BitcoinAddress',
-        components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
-      },
-      { type: 'address', name: 'offeringToken', internalType: 'address' },
-      { type: 'uint256', name: 'offeringAmount', internalType: 'uint256' },
-      { type: 'address', name: 'requester', internalType: 'address' }
-    ],
-    name: 'btcBuyOrders',
-    inputs: [{ type: 'uint256', name: '', internalType: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-      { type: 'address', name: 'askingToken', internalType: 'address' },
-      { type: 'uint256', name: 'askingAmount', internalType: 'uint256' },
-      { type: 'address', name: 'requester', internalType: 'address' }
-    ],
-    name: 'btcSellOrders',
-    inputs: [{ type: 'uint256', name: '', internalType: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [],
-    name: 'cancelAcceptedBtcBuyOrder',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [],
-    name: 'cancelAcceptedBtcSellOrder',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
-      {
-        type: 'tuple[]',
-        name: '',
-        internalType: 'struct BtcMarketPlace.AcceptedBtcBuyOrder[]',
         components: [
-          { type: 'uint256', name: 'orderId', internalType: 'uint256' },
-          { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-          { type: 'address', name: 'ercToken', internalType: 'address' },
-          { type: 'uint256', name: 'ercAmount', internalType: 'uint256' },
-          { type: 'address', name: 'requester', internalType: 'address' },
-          { type: 'address', name: 'accepter', internalType: 'address' },
-          { type: 'uint256', name: 'acceptTime', internalType: 'uint256' }
-        ]
-      },
-      { type: 'uint256[]', name: '', internalType: 'uint256[]' }
-    ],
-    name: 'getOpenAcceptedBtcBuyOrders',
-    inputs: []
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
-      {
-        type: 'tuple[]',
-        name: '',
-        internalType: 'struct BtcMarketPlace.AcceptedBtcSellOrder[]',
-        components: [
-          { type: 'uint256', name: 'orderId', internalType: 'uint256' },
           {
-            type: 'tuple',
-            name: 'bitcoinAddress',
-            internalType: 'struct BtcMarketPlace.BitcoinAddress',
-            components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
+            internalType: "bytes",
+            name: "scriptPubKey",
+            type: "bytes",
           },
-          { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-          { type: 'address', name: 'ercToken', internalType: 'address' },
-          { type: 'uint256', name: 'ercAmount', internalType: 'uint256' },
-          { type: 'address', name: 'requester', internalType: 'address' },
-          { type: 'address', name: 'accepter', internalType: 'address' },
-          { type: 'uint256', name: 'acceptTime', internalType: 'uint256' }
-        ]
+        ],
+        indexed: false,
+        internalType: "struct BtcBobMarketPlace.BitcoinAddress",
+        name: "bitcoinAddress",
+        type: "tuple",
       },
-      { type: 'uint256[]', name: '', internalType: 'uint256[]' }
     ],
-    name: 'getOpenAcceptedBtcSellOrders',
-    inputs: []
+    name: "btcSellOrderBtcSellOrderAccepted",
+    type: "event",
   },
   {
-    type: 'function',
-    stateMutability: 'view',
-    outputs: [
+    anonymous: false,
+    inputs: [
       {
-        type: 'tuple[]',
-        name: '',
-        internalType: 'struct BtcMarketPlace.BtcBuyOrder[]',
+        indexed: true,
+        internalType: "uint256",
+        name: "orderId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "sellAmountBtc",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "buyingToken",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
+      },
+    ],
+    name: "btcSellOrderSuccessfullyPlaced",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "btcSuccessfullySendtoDestination",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
         components: [
-          { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
           {
-            type: 'tuple',
-            name: 'bitcoinAddress',
-            internalType: 'struct BtcMarketPlace.BitcoinAddress',
-            components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
+            internalType: "bytes",
+            name: "scriptPubKey",
+            type: "bytes",
           },
-          { type: 'address', name: 'offeringToken', internalType: 'address' },
-          { type: 'uint256', name: 'offeringAmount', internalType: 'uint256' },
-          { type: 'address', name: 'requester', internalType: 'address' }
-        ]
+        ],
+        indexed: false,
+        internalType: "struct BtcBobMarketPlace.BitcoinAddress",
+        name: "bitcoinAddress",
+        type: "tuple",
       },
-      { type: 'uint256[]', name: '', internalType: 'uint256[]' }
     ],
-    name: 'getOpenBtcBuyOrders',
-    inputs: []
+    name: "ordinalSellOrderBtcSellOrderAccepted",
+    type: "event",
   },
   {
-    type: 'function',
-    stateMutability: 'view',
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "txId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint32",
+            name: "index",
+            type: "uint32",
+          },
+        ],
+        indexed: false,
+        internalType: "struct BtcBobMarketPlace.OrdinalId",
+        name: "ordinalID",
+        type: "tuple",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "buyingToken",
+        type: "address",
+      },
+    ],
+    name: "ordinalSellOrderSuccessfullyPlaced",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "ordinalSuccessfullySendtoDestination",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes",
+            name: "scriptPubKey",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BtcBobMarketPlace.BitcoinAddress",
+        name: "bitcoinAddress",
+        type: "tuple",
+      },
+    ],
+    name: "acceptBtcSellOrder",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes",
+            name: "scriptPubKey",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BtcBobMarketPlace.BitcoinAddress",
+        name: "bitcoinAddress",
+        type: "tuple",
+      },
+    ],
+    name: "acceptOrdinalSellOrder",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "btcSellOrders",
     outputs: [
       {
-        type: 'tuple[]',
-        name: '',
-        internalType: 'struct BtcMarketPlace.BtcSellOrder[]',
-        components: [
-          { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-          { type: 'address', name: 'askingToken', internalType: 'address' },
-          { type: 'uint256', name: 'askingAmount', internalType: 'uint256' },
-          { type: 'address', name: 'requester', internalType: 'address' }
-        ]
+        internalType: "uint256",
+        name: "sellAmountBtc",
+        type: "uint256",
       },
-      { type: 'uint256[]', name: '', internalType: 'uint256[]' }
+      {
+        internalType: "address",
+        name: "askingToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "btcSeller",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes",
+            name: "scriptPubKey",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BtcBobMarketPlace.BitcoinAddress",
+        name: "btcBuyer",
+        type: "tuple",
+      },
+      {
+        internalType: "bool",
+        name: "isOrderAccepted",
+        type: "bool",
+      },
     ],
-    name: 'getOpenBtcSellOrders',
-    inputs: []
+    stateMutability: "view",
+    type: "function",
   },
   {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [],
-    name: 'placeBtcBuyOrder',
     inputs: [
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
       {
-        type: 'tuple',
-        name: 'bitcoinAddress',
-        internalType: 'struct BtcMarketPlace.BitcoinAddress',
-        components: [{ type: 'bytes', name: 'scriptPubKey', internalType: 'bytes' }]
-      },
-      { type: 'address', name: 'sellingToken', internalType: 'address' },
-      { type: 'uint256', name: 'saleAmount', internalType: 'uint256' }
-    ]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [],
-    name: 'placeBtcSellOrder',
-    inputs: [
-      { type: 'uint256', name: 'amountBtc', internalType: 'uint256' },
-      { type: 'address', name: 'buyingToken', internalType: 'address' },
-      { type: 'uint256', name: 'buyAmount', internalType: 'uint256' }
-    ]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [],
-    name: 'proofBtcBuyOrder',
-    inputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
-      {
-        type: 'tuple',
-        name: 'transaction',
-        internalType: 'struct BitcoinTx.Info',
-        components: [
-          { type: 'bytes4', name: 'version', internalType: 'bytes4' },
-          { type: 'bytes', name: 'inputVector', internalType: 'bytes' },
-          { type: 'bytes', name: 'outputVector', internalType: 'bytes' },
-          { type: 'bytes4', name: 'locktime', internalType: 'bytes4' }
-        ]
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
       },
       {
-        type: 'tuple',
-        name: 'proof',
-        internalType: 'struct BitcoinTx.Proof',
         components: [
-          { type: 'bytes', name: 'merkleProof', internalType: 'bytes' },
-          { type: 'uint256', name: 'txIndexInBlock', internalType: 'uint256' },
-          { type: 'bytes', name: 'bitcoinHeaders', internalType: 'bytes' }
-        ]
-      }
-    ]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    outputs: [],
-    name: 'proofBtcSellOrder',
-    inputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
-      {
-        type: 'tuple',
-        name: 'transaction',
-        internalType: 'struct BitcoinTx.Info',
-        components: [
-          { type: 'bytes4', name: 'version', internalType: 'bytes4' },
-          { type: 'bytes', name: 'inputVector', internalType: 'bytes' },
-          { type: 'bytes', name: 'outputVector', internalType: 'bytes' },
-          { type: 'bytes4', name: 'locktime', internalType: 'bytes4' }
-        ]
+          {
+            internalType: "bytes4",
+            name: "version",
+            type: "bytes4",
+          },
+          {
+            internalType: "bytes",
+            name: "inputVector",
+            type: "bytes",
+          },
+          {
+            internalType: "bytes",
+            name: "outputVector",
+            type: "bytes",
+          },
+          {
+            internalType: "bytes4",
+            name: "locktime",
+            type: "bytes4",
+          },
+        ],
+        internalType: "struct BitcoinTx.Info",
+        name: "transaction",
+        type: "tuple",
       },
       {
-        type: 'tuple',
-        name: 'proof',
-        internalType: 'struct BitcoinTx.Proof',
         components: [
-          { type: 'bytes', name: 'merkleProof', internalType: 'bytes' },
-          { type: 'uint256', name: 'txIndexInBlock', internalType: 'uint256' },
-          { type: 'bytes', name: 'bitcoinHeaders', internalType: 'bytes' }
-        ]
-      }
-    ]
+          {
+            internalType: "bytes",
+            name: "merkleProof",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "txIndexInBlock",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "bitcoinHeaders",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BitcoinTx.Proof",
+        name: "proof",
+        type: "tuple",
+      },
+    ],
+    name: "completeBtcSellOrder",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    type: 'function',
-    stateMutability: 'nonpayable',
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes4",
+            name: "version",
+            type: "bytes4",
+          },
+          {
+            internalType: "bytes",
+            name: "inputVector",
+            type: "bytes",
+          },
+          {
+            internalType: "bytes",
+            name: "outputVector",
+            type: "bytes",
+          },
+          {
+            internalType: "bytes4",
+            name: "locktime",
+            type: "bytes4",
+          },
+        ],
+        internalType: "struct BitcoinTx.Info",
+        name: "transaction",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes",
+            name: "merkleProof",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "txIndexInBlock",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "bitcoinHeaders",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BitcoinTx.Proof",
+        name: "proof",
+        type: "tuple",
+      },
+    ],
+    name: "completeOrdinalSellOrder",
     outputs: [],
-    name: 'withdrawBtcBuyOrder',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256' }]
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    type: 'function',
-    stateMutability: 'nonpayable',
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "ordinalSellOrders",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "txId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint32",
+            name: "index",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct BtcBobMarketPlace.OrdinalId",
+        name: "ordinalID",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "askingToken",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "txHash",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint32",
+            name: "txOutputIndex",
+            type: "uint32",
+          },
+          {
+            internalType: "uint64",
+            name: "txOutputValue",
+            type: "uint64",
+          },
+        ],
+        internalType: "struct BitcoinTx.UTXO",
+        name: "utxo",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "ordinalSeller",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes",
+            name: "scriptPubKey",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BtcBobMarketPlace.BitcoinAddress",
+        name: "ordinalBuyer",
+        type: "tuple",
+      },
+      {
+        internalType: "bool",
+        name: "isOrderAccepted",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "sellAmountBtc",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "buyingToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
+      },
+    ],
+    name: "placeBtcSellOrder",
     outputs: [],
-    name: 'withdrawBtcSellOrder',
-    inputs: [{ type: 'uint256', name: 'id', internalType: 'uint256' }]
-  }
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "txId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint32",
+            name: "index",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct BtcBobMarketPlace.OrdinalId",
+        name: "ordinalID",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "txHash",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint32",
+            name: "txOutputIndex",
+            type: "uint32",
+          },
+          {
+            internalType: "uint64",
+            name: "txOutputValue",
+            type: "uint64",
+          },
+        ],
+        internalType: "struct BitcoinTx.UTXO",
+        name: "utxo",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "buyAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "buyToken",
+        type: "address",
+      },
+    ],
+    name: "placeOrdinalSellOrder",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "usdcContractAddress",
+    outputs: [
+      {
+        internalType: "contract IERC20",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
