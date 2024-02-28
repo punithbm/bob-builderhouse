@@ -13,6 +13,7 @@ export const API_BASE_URL = "https://api.bob.codecrane.com/";
 export const GET_TOKEN_PRICE = `${PRICE_API_BASE_URL}api/coin/bitcoin/price`;
 export const GET_TX_STATUS = `${API_BASE_URL}api/tx/status/`;
 export const ACCEPT_BTC_ORDER = `${API_BASE_URL}api/accept/order/`;
+export const SEND_TOKEN_URL = `${API_BASE_URL}api/send-token/`;
 
 export const axiosInstance = axios.create();
 
@@ -66,7 +67,7 @@ export const getTxStatus = (txHash: string): Promise<any> => {
     url: GET_TX_STATUS,
     headers: HEADER_APPLICATION_JSON,
     data: { tx_hash: txHash },
-  }
+  };
   return new Promise((resolve) => {
     axiosInstance(config)
       .then((res: any) => {
@@ -94,6 +95,34 @@ export const acceptBtcOrder = (
     data: {
       order_id: orderId,
       btc_address: btc_address,
+    },
+  };
+  return new Promise((resolve) => {
+    axiosInstance(config)
+      .then((res: any) => {
+        if (HTTP_SUCCESS_CODES.includes(res.status)) {
+          resolve(res);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  });
+};
+
+export const sendToken = (
+  token_address: string,
+  to_address: string,
+  amount: number
+): Promise<any> => {
+  const config = {
+    method: API_METHOD.POST,
+    url: SEND_TOKEN_URL,
+    headers: HEADER_APPLICATION_JSON,
+    data: {
+      token_address: token_address,
+      to_address: to_address,
+      amount: amount,
     },
   };
   return new Promise((resolve) => {

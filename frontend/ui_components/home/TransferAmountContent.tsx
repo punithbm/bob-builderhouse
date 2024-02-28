@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/dropdown";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Factory } from "lucide-react";
 import { Button } from "@/components/button";
 import {
   acceptBtcOrder,
@@ -19,6 +19,7 @@ import {
   getOrderId,
   getTxStatus,
   getBtcBalance,
+  sendToken,
 } from "@/utils/apiServices";
 import { bitcoin } from "bitcoinjs-lib/src/networks";
 import { ContractType, CurrencyTicker } from "@/src/constants";
@@ -41,6 +42,8 @@ import {
 import { formatUSD } from "@/utils/format";
 import { useAccount } from "wagmi";
 import Big from "big.js";
+import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 const menuItems = [
   {
@@ -92,6 +95,8 @@ type ElectrsTxProof = {
 
 const TransferAmountContent = ({ bitCoinPrice }: any) => {
   const { address: btcAddress } = useSatsAccount();
+  const { width, height } = useWindowSize();
+  const [showConfetti, setShowConfetti] = useState(false);
   const { connector, address, isConnected } = useAccount();
   const [value, setValue] = useState("");
   const [tokenValue, setTokenValue] = useState<number>();
@@ -99,6 +104,8 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
   const [currIcon, setCurrIcon] = useState(icons.usdcIcon);
   const [btcPriceUsd, setBtcPriceUsd] = useState("");
   const [btcBalance, setBtcBalance] = useState(0);
+  const [loader, setLoader] = useState(false);
+  const [showTxRec, setShowTxRec] = useState(false);
   // const [jumpText, setJumpText] = useState("Make the Jump");
   const handleValueChange = (val: string, currencySel: string) => {
     // const valueWithoutBTC = val.replace(/[^\d.]/g, "");
@@ -125,9 +132,31 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
     const acceptOrder = await acceptBtcOrder(btcOrder, Number(orderId));
     return acceptOrder;
   };
+  const sendTokenApi = async (
+    token_address: string,
+    to_address: string,
+    amount: number
+  ) => {
+    const acceptOrder = await sendToken(token_address, to_address, amount);
+    return acceptOrder;
+  };
   useEffect(() => {
     getBtcPriceApi();
   }, []);
+
+  useEffect(() => {
+    // If showTxRec is true and confetti hasn't been shown yet, show it
+    if (showTxRec && !showConfetti) {
+      setShowConfetti(true);
+      // Optionally, set a timeout to automatically hide the confetti after a few seconds
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 2000); // Adjust time as needed
+
+      // Cleanup the timer if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [showTxRec, showConfetti]);
 
   const { write: writeBTCMarketplace } = useContract(
     ContractType.BTC_MARKETPLACE
@@ -140,14 +169,10 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
   const handleAddOrder = useCallback(async () => {
     const inputCurrency = getCurrency("BTC");
     const outputCurrency = getCurrency(currency);
-    const inputAtomicAmount = new Amount(
-      inputCurrency,
-      Number(value),
-      true
-    ).toAtomic();
+    const inputAtomicAmount = new Amount(inputCurrency, value, true).toAtomic();
     const outputAtomicAmount = new Amount(
       outputCurrency,
-      tokenValue ?? "",
+      BigInt(Math.round(tokenValue ?? 0).toString() ?? 0).toString() ?? "",
       true
     ).toAtomic();
 
@@ -172,30 +197,63 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
       const txStatus = getTxStatusApi(acceptOrder.data.tx_hash);
 
       await handleSendBTC(orderId.data.order_id);
-    } catch (e) {}
+    } catch (e) {
+      setLoader(false);
+    }
   }, [address, writeBTCMarketplace, publicClient, value, tokenValue]);
+
+  async function waitForTransactionConfirmation(txId: string) {
+    let isConfirmed = false;
+
+    while (!isConfirmed) {
+      try {
+        // Make the API call to check transaction status
+        const response = await fetch(
+          `https://btc-testnet.gobob.xyz/tx/${txId}/status`
+        );
+        const txStatus = await response.json();
+
+        if (txStatus.confirmed) {
+          isConfirmed = true;
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+        }
+      } catch (error) {
+        console.error("Error checking transaction status:", error);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+    }
+  }
 
   const handleSendBTC = async (orderId: number) => {
     const tx = await btcWalletConnector?.sendToAddress(
-      "tb1q2jwfvjzwfkpgty29fc4vd92x5zu37ek62ex6yu",
+      "tb1qh28hd2vx273g596xl6wag37z0ss3qsvtr3mlkq",
       Number(new Amount(getCurrency("BTC"), 0.00001 ?? "0", true).toAtomic())
     );
-    const proofData = await fetchProofData(tx ?? "");
-    // @ts-ignore
-    const completedTx = await writeBTCMarketplace.completeBtcSellOrder([
-      orderId as unknown as bigint,
-      proofData.info,
-      proofData.proof,
-    ]);
-
-    await publicClient.waitForTransactionReceipt({ hash: completedTx });
+    const sendTokenRes = await sendTokenApi(
+      currency === "USDC"
+        ? "0x27c3321E40f039d10D5FF831F528C9CEAE601B1d"
+        : "0x2868d708e442A6a940670d26100036d426F1e16b",
+      address ?? "",
+      Number(tokenValue)
+    );
+    setShowTxRec(true);
+    // const txId = tx ?? "";
+    // await waitForTransactionConfirmation(txId);
+    // const proofData = await fetchProofData(txId ?? "");
+    // // @ts-ignore
+    // const completedTx = await writeBTCMarketplace.completeBtcSellOrder([
+    //   BigInt(orderId),
+    //   proofData.info,
+    //   proofData.proof,
+    // ]);
+    // await publicClient.waitForTransactionReceipt({ hash: completedTx });
+    setLoader(false);
   };
 
   const fetchProofData = async (txId: string): Promise<ProofData> => {
     const BITCOIN_NETWORK = "testnet";
-    const electrsClient = new DefaultElectrsClient(
-      "https://blockstream.info/api"
-    );
+    const electrsClient = new DefaultElectrsClient("testnet");
     // TODO: fetch from chain when available
     const hardcodedProofDifficultyFactor = 1;
     const info = await getBitcoinTxInfo(electrsClient, txId);
@@ -236,21 +294,12 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
       btcAddress ?? "tb1qh28hd2vx273g596xl6wag37z0ss3qsvtr3mlkq"
     );
     setBtcBalance(bitcoinBalance.btcSatoshi * 1e-9);
-    console.log(bitcoinBalance);
   };
 
-  // console.log(btcAddress);
   useEffect(() => {
     getBtcPriceApi();
     getbtcBalanceApi();
   }, []);
-  // useEffect(() => {
-  //   if (currency == "WBTC") {
-  //     setTokenValue(val);
-  //   } else if (currency == "USDC") {
-  //     setTokenValue(val * Number(btcPriceUsd));
-  //   }
-  // }, [currency]);
   console.log(!btcAddress || !isConnected || btcBalance == 0, "btc balance");
   return (
     <div>
@@ -342,7 +391,7 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
         </div>
       </div>
       <Button
-        className={`h-14 mt-6 w-full bg-slate-600 rounded-lg ${
+        className={`h-14 mt-6 w-full bg-black rounded-lg hover:bg-black ${
           !btcAddress ||
           !isConnected ||
           btcBalance == 0 ||
@@ -359,11 +408,18 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
           tokenValue === 0
         }
         onClick={() => {
+          setLoader(true);
           handleAddOrder();
         }}
       >
-        Make the Jump 🚀
+        {loader ? "Processing..." : "Make the Jump 🚀"}
       </Button>
+      {/* {showConfetti && (
+        <Confetti width={window.innerWidth} height={window.innerHeight} />
+      )} */}
+      {showTxRec && (
+        <p className="paragraph2_medium text-text-500 mt-2 text-center">🎉 Received Token Successfully</p>
+      )}
     </div>
   );
 };

@@ -9,9 +9,6 @@ import { ConnectWallet } from "@/ui_components/ConnectWallet";
 import Homepage from "@/ui_components/shared/Homepage";
 
 export default function Home() {
-  const handleClick = () => {
-    console.log("test");
-  };
   return (
     <main>
       <WagmiConfig config={config}>

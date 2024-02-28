@@ -11,7 +11,13 @@ const Homepage: FC = () => {
   return (
     <div className="grid grid-cols-2 items-center justify-center h-full w-full">
       <div className="relative col-span-1 text-left">
-        <Image src={icons.bobLogo} alt="bob-logo" width={110} height={40} className="mb-8" />
+        <Image
+          src={icons.bobLogo}
+          alt="bob-logo"
+          width={110}
+          height={40}
+          className="mb-8"
+        />
         <h1 className="heading1_bold pb-4">
           Bridge BTC the <br /> trustless way
         </h1>
