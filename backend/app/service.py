@@ -127,4 +127,31 @@ class ChainService:
         signed_txn = self.account.sign_transaction(transaction)
         txn_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
         return self.web3.to_hex(txn_hash)
+    
+    def send_non_native_token(self, token_address, address, amount):
+        token_abi = [
+            {
+                "constant": False,
+                "inputs": [
+                    {"name": "_to", "type": "address"},
+                    {"name": "_value", "type": "uint256"}
+                ],
+                "name": "transfer",
+                "outputs": [{"name": "", "type": "bool"}],
+                "type": "function"
+            },
+        ]
+        amount = self.web3.to_wei(amount, 'ether')
+        token_contract = self.web3.eth.contract(address=token_address, abi=token_abi)
+        nonce = self.web3.eth.get_transaction_count(self.account.address)
+        transaction = token_contract.functions.transfer(address, amount).build_transaction({
+            'from': self.account.address,
+            'chainId': int(settings.BLOCKCHAIN_ID),
+            'gas': 100000,
+            'gasPrice': self.web3.to_wei('5', 'gwei'),
+            'nonce': nonce,
+        })
+        signed_txn = self.account.sign_transaction(transaction)
+        txn_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        return self.web3.to_hex(txn_hash)
 

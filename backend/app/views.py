@@ -87,3 +87,16 @@ def GetOrderId(request, tx_hash):
     service = ChainService()
     response = service.get_order_id(tx_hash)
     return JsonResponse(response)
+
+@api_view(['POST'])
+@decorator.valid_json
+def SendNonNativeToken(request):
+    data = request.input_data
+    service = ChainService()
+    tx_hash = service.send_non_native_token(
+        data.get('token_address'),
+        data.get('to_address'),
+        data.get('amount')
+    )
+    response = {"tx_hash": tx_hash}
+    return JsonResponse(response)
