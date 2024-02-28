@@ -52,6 +52,7 @@ urlpatterns = [
     url('api/tx/status/', views.GetTransactionStatus),
     path('api/bitcoin/<address>/balance/', views.GetBitCoinBalance),
     path('api/address/<address>/balance/', views.GetBobTokensBalance),
+    url('api/claim/', views.ClaimToken),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

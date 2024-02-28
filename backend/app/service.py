@@ -17,6 +17,22 @@ class ChainService:
     def is_connected(self):
         return self.web3.isConnected()
     
+    def claim_token(self, address):
+        nonce = self.web3.eth.get_transaction_count(self.account.address)
+        amount_in_ether = 0.01
+        amount_in_wei = self.web3.to_wei(amount_in_ether, 'ether')
+        tx = {
+            'from': self.account.address,
+            'chainId': int(settings.BLOCKCHAIN_ID),
+            'nonce': nonce,
+            'to': address,
+            'value': amount_in_wei,
+            'gas': 21000,  # Gas limit for a standard Ether transfer
+            'gasPrice': self.web3.to_wei('50', 'gwei')
+        }
+        signed_txn = self.account.sign_transaction(tx)
+        txn_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        return self.web3.to_hex(txn_hash)
     
     def send_transaction(self, function_name, *args):
         nonce = self.web3.eth.get_transaction_count(self.account.address)
@@ -64,4 +80,4 @@ class ChainService:
 
         # Call the balanceOf function
         balance = token_contract.functions.balanceOf(address).call()
-        return balancesites 
+        return balance

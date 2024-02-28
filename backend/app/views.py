@@ -70,3 +70,12 @@ def GetBobTokensBalance(request, address):
     tokens.append(wbtc_token)
     response['tokens'] = tokens
     return JsonResponse(response)
+
+@api_view(['POST'])
+@decorator.valid_json
+def ClaimToken(request):
+    data = request.input_data
+    service = ChainService()
+    tx_hash = service.claim_token(data.get('address'))
+    response = {"tx_hash": tx_hash}
+    return JsonResponse(response)
