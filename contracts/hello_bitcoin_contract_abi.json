@@ -33,7 +33,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct BitcoinUsdt.BitcoinAddress",
+        "internalType": "struct HelloBitcoin.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -97,7 +97,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct BitcoinUsdt.BitcoinAddress",
+        "internalType": "struct HelloBitcoin.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -128,7 +128,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct BitcoinUsdt.OrdinalId",
+        "internalType": "struct HelloBitcoin.OrdinalId",
         "name": "ordinalID",
         "type": "tuple"
       },
@@ -170,7 +170,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct BitcoinUsdt.BitcoinAddress",
+        "internalType": "struct HelloBitcoin.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -195,7 +195,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct BitcoinUsdt.BitcoinAddress",
+        "internalType": "struct HelloBitcoin.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -238,7 +238,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct BitcoinUsdt.BitcoinAddress",
+        "internalType": "struct HelloBitcoin.BitcoinAddress",
         "name": "btcBuyer",
         "type": "tuple"
       },
@@ -398,7 +398,7 @@
             "type": "uint32"
           }
         ],
-        "internalType": "struct BitcoinUsdt.OrdinalId",
+        "internalType": "struct HelloBitcoin.OrdinalId",
         "name": "ordinalID",
         "type": "tuple"
       },
@@ -442,7 +442,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct BitcoinUsdt.BitcoinAddress",
+        "internalType": "struct HelloBitcoin.BitcoinAddress",
         "name": "ordinalBuyer",
         "type": "tuple"
       },
@@ -488,7 +488,7 @@
             "type": "uint32"
           }
         ],
-        "internalType": "struct BitcoinUsdt.OrdinalId",
+        "internalType": "struct HelloBitcoin.OrdinalId",
         "name": "ordinalID",
         "type": "tuple"
       },
