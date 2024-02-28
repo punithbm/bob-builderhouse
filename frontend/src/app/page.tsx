@@ -1,4 +1,5 @@
 "use client";
+
 import { WagmiConfig } from "wagmi";
 import { SatsWagmiConfig } from "@gobob/sats-wagmi";
 
@@ -15,7 +16,7 @@ export default function Home() {
     <main>
       <WagmiConfig config={config}>
         <SatsWagmiConfig network="testnet">
-          <div className="flex min-h-screen flex-col items-center justify-between p-24">
+          <div className="flex h-screen flex-col items-center justify-between p-24">
             {/* <ConnectWallet />
              */}
             <Homepage />

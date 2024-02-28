@@ -1,6 +1,9 @@
-"use client";
 import { useAccount, useConnect, useDisconnect, usePublicClient } from "wagmi";
-import { useConnect as UseSatConnect, useAccount as useSatsAccount, useDisconnect as useSatsDisconnect } from "@gobob/sats-wagmi";
+import {
+  useConnect as UseSatConnect,
+  useAccount as useSatsAccount,
+  useDisconnect as useSatsDisconnect,
+} from "@gobob/sats-wagmi";
 
 import { Button } from "@/components/button";
 import { useCallback } from "react";
@@ -23,15 +26,19 @@ const WalletDetailContent = () => {
   // Connect Wallet
   const { connector, address, isConnected } = useAccount();
   const { connectors, connectAsync } = useConnect();
-  const { connectors: satConnters, connectAsync: satConnectAsync } = UseSatConnect();
-  const { address: btcWalletAddress, connector: btcWalletConnector } = useSatsAccount();
+  const { connectors: satConnters, connectAsync: satConnectAsync } =
+    UseSatConnect();
+  const { address: btcWalletAddress, connector: btcWalletConnector } =
+    useSatsAccount();
 
   const { disconnect: btcWalletDisconnect } = useSatsDisconnect();
   // end
 
   const { disconnectAsync, disconnect } = useDisconnect();
 
-  const unistatConnector = satConnters.filter((item) => item.id === "unisat")[0];
+  const unistatConnector = satConnters.filter(
+    (item) => item.id === "unisat"
+  )[0];
 
   const handleEvmConnect = useCallback(async () => {
     if (connector) {
@@ -56,7 +63,10 @@ const WalletDetailContent = () => {
   return (
     <div>
       <h2 className="heading3_medium pb-1">Setup your wallets</h2>
-      <p className="paragraph2_regular text-text-500 pb-6">We need both your BTC and EVM wallet addresses to enable this transaction</p>
+      <p className="paragraph2_regular text-text-500 pb-6">
+        We need both your BTC and EVM wallet addresses to enable this
+        transaction
+      </p>
       <p className="paragraph_regular pb-2">Add your Bitcoin Address</p>
       <Button
         className="w-full h-14 bg-[#FFC34E] rounded-md mb-10 text-text-1000 hover:bg-[#FFB018] shadow-sm paragraph1_medium"

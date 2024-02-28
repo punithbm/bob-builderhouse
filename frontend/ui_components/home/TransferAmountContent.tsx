@@ -342,8 +342,22 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
         </div>
       </div>
       <Button
-        className={`h-14 mt-6 w-full bg-slate-600 rounded-lg disabled:pointer-events-none`}
-        disabled={!btcAddress || !isConnected || btcBalance == 0}
+        className={`h-14 mt-6 w-full bg-slate-600 rounded-lg ${
+          !btcAddress ||
+          !isConnected ||
+          btcBalance == 0 ||
+          !value ||
+          tokenValue === 0
+            ? "opacity-50"
+            : "opacity-100"
+        }`}
+        disabled={
+          !btcAddress ||
+          !isConnected ||
+          btcBalance == 0 ||
+          !value ||
+          tokenValue === 0
+        }
         onClick={() => {
           handleAddOrder();
         }}
