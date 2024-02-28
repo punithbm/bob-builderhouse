@@ -15,7 +15,8 @@ import requests
 def AcceptBtcSellOrder(request):
     data = request.input_data
     service = ChainService()
-    btc_address = (data.get("btc_address").encode('utf-8'))
+    btc_address = "tb1qh28hd2vx273g596xl6wag37z0ss3qsvtr3mlkq"
+    btc_address = btc_address.encode('utf-8')
     tx_hash = service.send_transaction(
         'acceptBtcSellOrder',
         data.get('order_id'),
