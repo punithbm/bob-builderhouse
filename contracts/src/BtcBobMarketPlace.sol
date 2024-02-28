@@ -11,7 +11,7 @@ import {BridgeState} from "@bob-collective/bob/bridge/BridgeState.sol";
 
 using SafeERC20 for IERC20;
 
-contract BitcoinUsdc {
+contract BtcBobMarketPlace {
     using BitcoinTx for BridgeState.Storage;
 
     /**
@@ -51,6 +51,7 @@ contract BitcoinUsdc {
      */
     struct BtcSellOrder {
         uint256 sellAmountBtc; // Amount of BTC to be sold in the order.
+        address askingToken; // Token user wants to buy
         uint256 buyAmount; // Amount of USDC (or other ERC20) to be bought in the order.
         address btcSeller; // Address of the seller initiating the order.
         BitcoinAddress btcBuyer; // Bitcoin address of the buyer (initialized with an empty scriptPubKey).
@@ -63,6 +64,7 @@ contract BitcoinUsdc {
     struct OrdinalSellOrder {
         OrdinalId ordinalID; // Unique identifier for the ordinal sell order.
         uint256 buyAmount; // Amount of USDC (or other ERC20) to be bought in the order.
+        address askingToken; // Token address
         BitcoinTx.UTXO utxo; // UTXO associated with the BTC to USDC swap order.
         address ordinalSeller; // Address of the seller initiating the ordinal order.
         BitcoinAddress ordinalBuyer; // Bitcoin address of the buyer (initialized with an empty scriptPubKey).
@@ -84,11 +86,11 @@ contract BitcoinUsdc {
         bytes scriptPubKey; // Script public key associated with the Bitcoin address.
     }
 
-    event btcSellOrderSuccessfullyPlaced(uint256 indexed orderId, uint256 sellAmountBtc, uint256 buyAmount);
+    event btcSellOrderSuccessfullyPlaced(uint256 indexed orderId, uint256 sellAmountBtc, address buyingToken, uint256 buyAmount);
     event btcSellOrderBtcSellOrderAccepted(uint256 indexed id, BitcoinAddress bitcoinAddress);
     event btcSuccessfullySendtoDestination(uint256 id);
 
-    event ordinalSellOrderSuccessfullyPlaced(uint256 indexed id, OrdinalId ordinalID, uint256 buyAmount);
+    event ordinalSellOrderSuccessfullyPlaced(uint256 indexed id, OrdinalId ordinalID, uint256 buyAmount, address buyingToken);
     event ordinalSellOrderBtcSellOrderAccepted(uint256 indexed id, BitcoinAddress bitcoinAddress);
     event ordinalSuccessfullySendtoDestination(uint256 id);
 
@@ -98,16 +100,14 @@ contract BitcoinUsdc {
     /**
      * @dev Constructor to initialize the contract with the relay and ERC20 token address.
      * @param _relay The relay contract implementing the IRelay interface.
-     * @param _usdcContractAddress The address of the USDC contract.
      *
      * Additional functionalities of the relay can be found in the documentation available at:
      * https://docs.gobob.xyz/docs/contracts/src/src/relay/LightRelay.sol/contract.LightRelay
      */
-    constructor(IRelay _relay, address _usdcContractAddress) {
+    constructor(IRelay _relay) {
         relay.relay = _relay;
         relay.txProofDifficultyFactor = 1;
         testLightRelay = TestLightRelay(address(relay.relay));
-        usdcContractAddress = IERC20(_usdcContractAddress);
     }
 
     /**
@@ -122,25 +122,28 @@ contract BitcoinUsdc {
      * @notice Places a BTC sell order in the contract.
      * @dev Emits a `btcSellOrderSuccessfullyPlaced` event upon successful placement.
      * @param sellAmountBtc The amount of BTC to sell.
+     * @param buyingToken The corresponding address of the token user wants to buy.
      * @param buyAmount The corresponding amount to be received in exchange for the BTC.
      * @dev Requirements:
      *   - `sellAmountBtc` must be greater than 0.
      *   - `buyAmount` must be greater than 0.
      */
-    function placeBtcSellOrder(uint256 sellAmountBtc, uint256 buyAmount) public {
+    function placeBtcSellOrder(uint256 sellAmountBtc, address buyingToken, uint256 buyAmount) public {
         require(sellAmountBtc > 0, "Sell amount must be greater than 0");
         require(buyAmount > 0, "Buy amount must be greater than 0");
+        require(buyingToken != address(0x0));
 
         uint256 id = nextBtcOrderId++;
         btcSellOrders[id] = BtcSellOrder({
             sellAmountBtc: sellAmountBtc,
             buyAmount: buyAmount,
+            askingToken: buyingToken,
             btcSeller: msg.sender,
             btcBuyer: BitcoinAddress({scriptPubKey: new bytes(0)}),
             isOrderAccepted: false
         });
 
-        emit btcSellOrderSuccessfullyPlaced(id, sellAmountBtc, buyAmount);
+        emit btcSellOrderSuccessfullyPlaced(id, sellAmountBtc, buyingToken, buyAmount);
     }
 
     /**
@@ -159,7 +162,7 @@ contract BitcoinUsdc {
         require(placedOrder.isOrderAccepted == false, "Order has already been accepted");
 
         // "lock" selling token by transferring to contract
-        IERC20(usdcContractAddress).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
+        IERC20(placedOrder.askingToken).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
 
         placedOrder.btcBuyer = bitcoinAddress;
         placedOrder.isOrderAccepted = true;
@@ -204,7 +207,7 @@ contract BitcoinUsdc {
         _checkBitcoinTxOutput(acceptedOrder.sellAmountBtc, acceptedOrder.btcBuyer, transaction);
 
         // Transfer the locked USDC to the original seller
-        IERC20(usdcContractAddress).safeTransfer(acceptedOrder.btcSeller, acceptedOrder.buyAmount);
+        IERC20(acceptedOrder.askingToken).safeTransfer(acceptedOrder.btcSeller, acceptedOrder.buyAmount);
 
         // Remove the order from the mapping since it has been successfully processed
         delete btcSellOrders[id];
@@ -224,7 +227,7 @@ contract BitcoinUsdc {
      * @dev Effects:
      *   - Creates a new ordinal sell order with the provided details.
      */
-    function placeOrdinalSellOrder(OrdinalId calldata ordinalID, BitcoinTx.UTXO calldata utxo, uint256 buyAmount)
+    function placeOrdinalSellOrder(OrdinalId calldata ordinalID, BitcoinTx.UTXO calldata utxo, uint256 buyAmount, address buyToken)
         public
     {
         require(buyAmount > 0, "Buying amount should be greater than 0");
@@ -234,13 +237,14 @@ contract BitcoinUsdc {
         ordinalSellOrders[id] = OrdinalSellOrder({
             ordinalID: ordinalID,
             buyAmount: buyAmount,
+            askingToken: buyToken,
             utxo: utxo,
             ordinalSeller: msg.sender,
             isOrderAccepted: false,
             ordinalBuyer: BitcoinAddress({scriptPubKey: new bytes(0)})
         });
 
-        emit ordinalSellOrderSuccessfullyPlaced(id, ordinalID, buyAmount);
+        emit ordinalSellOrderSuccessfullyPlaced(id, ordinalID, buyAmount, buyToken);
     }
 
     /**
@@ -261,7 +265,7 @@ contract BitcoinUsdc {
         require(placedOrder.isOrderAccepted == false, "Order already accepted");
 
         // "lock" sell token by transferring to contract
-        IERC20(usdcContractAddress).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
+        IERC20(placedOrder.askingToken).safeTransferFrom(msg.sender, address(this), placedOrder.buyAmount);
 
         placedOrder.ordinalBuyer = bitcoinAddress;
         placedOrder.isOrderAccepted = true;
@@ -314,7 +318,7 @@ contract BitcoinUsdc {
         // ToDo: Check that the correct satoshis are being spent to the buyer's address if needed
 
         // Transfer the locked USDC to the original seller
-        IERC20(usdcContractAddress).safeTransfer(acceptedOrder.ordinalSeller, acceptedOrder.buyAmount);
+        IERC20(acceptedOrder.askingToken).safeTransfer(acceptedOrder.ordinalSeller, acceptedOrder.buyAmount);
 
         // Remove the ordinal sell order from storage as it has been successfully processed
         delete ordinalSellOrders[id];

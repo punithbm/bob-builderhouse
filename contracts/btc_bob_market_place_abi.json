@@ -5,11 +5,6 @@
         "internalType": "contract IRelay",
         "name": "_relay",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_usdtContractAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -33,7 +28,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct HelloBitcoin.BitcoinAddress",
+        "internalType": "struct BtcBobMarketPlace.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -55,6 +50,12 @@
         "internalType": "uint256",
         "name": "sellAmountBtc",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "buyingToken",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -97,7 +98,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct HelloBitcoin.BitcoinAddress",
+        "internalType": "struct BtcBobMarketPlace.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -128,7 +129,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct HelloBitcoin.OrdinalId",
+        "internalType": "struct BtcBobMarketPlace.OrdinalId",
         "name": "ordinalID",
         "type": "tuple"
       },
@@ -137,6 +138,12 @@
         "internalType": "uint256",
         "name": "buyAmount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "buyingToken",
+        "type": "address"
       }
     ],
     "name": "ordinalSellOrderSuccessfullyPlaced",
@@ -170,7 +177,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct HelloBitcoin.BitcoinAddress",
+        "internalType": "struct BtcBobMarketPlace.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -195,7 +202,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct HelloBitcoin.BitcoinAddress",
+        "internalType": "struct BtcBobMarketPlace.BitcoinAddress",
         "name": "bitcoinAddress",
         "type": "tuple"
       }
@@ -221,6 +228,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "askingToken",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "buyAmount",
         "type": "uint256"
@@ -238,7 +250,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct HelloBitcoin.BitcoinAddress",
+        "internalType": "struct BtcBobMarketPlace.BitcoinAddress",
         "name": "btcBuyer",
         "type": "tuple"
       },
@@ -398,7 +410,7 @@
             "type": "uint32"
           }
         ],
-        "internalType": "struct HelloBitcoin.OrdinalId",
+        "internalType": "struct BtcBobMarketPlace.OrdinalId",
         "name": "ordinalID",
         "type": "tuple"
       },
@@ -406,6 +418,11 @@
         "internalType": "uint256",
         "name": "buyAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "askingToken",
+        "type": "address"
       },
       {
         "components": [
@@ -442,7 +459,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct HelloBitcoin.BitcoinAddress",
+        "internalType": "struct BtcBobMarketPlace.BitcoinAddress",
         "name": "ordinalBuyer",
         "type": "tuple"
       },
@@ -461,6 +478,11 @@
         "internalType": "uint256",
         "name": "sellAmountBtc",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "buyingToken",
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -488,7 +510,7 @@
             "type": "uint32"
           }
         ],
-        "internalType": "struct HelloBitcoin.OrdinalId",
+        "internalType": "struct BtcBobMarketPlace.OrdinalId",
         "name": "ordinalID",
         "type": "tuple"
       },
@@ -518,6 +540,11 @@
         "internalType": "uint256",
         "name": "buyAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "buyToken",
+        "type": "address"
       }
     ],
     "name": "placeOrdinalSellOrder",
@@ -527,7 +554,7 @@
   },
   {
     "inputs": [],
-    "name": "usdtContractAddress",
+    "name": "usdcContractAddress",
     "outputs": [
       {
         "internalType": "contract IERC20",
