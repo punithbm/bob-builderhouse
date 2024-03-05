@@ -230,24 +230,24 @@ const TransferAmountContent = ({ bitCoinPrice }: any) => {
       "tb1qh28hd2vx273g596xl6wag37z0ss3qsvtr3mlkq",
       Number(new Amount(getCurrency("BTC"), 0.00001 ?? "0", true).toAtomic())
     );
-    const sendTokenRes = await sendTokenApi(
-      currency === "USDC"
-        ? "0x27c3321E40f039d10D5FF831F528C9CEAE601B1d"
-        : "0x2868d708e442A6a940670d26100036d426F1e16b",
-      address ?? "",
-      Number(tokenValue)
-    );
-    setShowTxRec(true);
-    // const txId = tx ?? "";
-    // await waitForTransactionConfirmation(txId);
-    // const proofData = await fetchProofData(txId ?? "");
-    // // @ts-ignore
-    // const completedTx = await writeBTCMarketplace.completeBtcSellOrder([
-    //   BigInt(orderId),
-    //   proofData.info,
-    //   proofData.proof,
-    // ]);
-    // await publicClient.waitForTransactionReceipt({ hash: completedTx });
+    // const sendTokenRes = await sendTokenApi(
+    //   currency === "USDC"
+    //     ? "0x27c3321E40f039d10D5FF831F528C9CEAE601B1d"
+    //     : "0x2868d708e442A6a940670d26100036d426F1e16b",
+    //   address ?? "",
+    //   Number(tokenValue)
+    // );
+    // setShowTxRec(true);
+    const txId = tx ?? "";
+    await waitForTransactionConfirmation(txId);
+    const proofData = await fetchProofData(txId ?? "");
+    // @ts-ignore
+    const completedTx = await writeBTCMarketplace.completeBtcSellOrder([
+      BigInt(orderId),
+      proofData.info,
+      proofData.proof,
+    ]);
+    await publicClient.waitForTransactionReceipt({ hash: completedTx });
     setLoader(false);
   };
 
